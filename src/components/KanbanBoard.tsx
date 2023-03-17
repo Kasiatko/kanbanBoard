@@ -16,56 +16,101 @@ const InitialColumns: column[] = [
     title: "Todo",
     taskIds: [],
   },
-//   {
-//     id: 2,
-//     title: "In Progress",
-//     taskIds: [],
-//   },
-//   {
-//     id: 3,
-//     title: "In Review",
-//     taskIds: [],
-//   },
-//   {
-//     id: 4,
-//     title: "Done",
-//     taskIds: [],
-//   },
-];
+  {
+    id: 2,
+    title: "In Progress",
+    taskIds: [],
+  },
+  {
+    id: 3,
+    title: "In Review",
+    taskIds: [],
+  },
+  {
+    id: 4,
+    title: "Done",
+    taskIds: [],
+  },
+ ];
 
 type Task = {
     id:string;
     name:string
 };
 
-const initialTasks: Task[] =[];
-
 function KanbanBoard() {
+
     const [columns, setColumns] = useState(InitialColumns);
-    const [tasks, setTasks] = useState(initialTasks);
 
-    const reorder = (list, startIndex, endIndex) => {
-        const result = Array.from(list);
-        const [removed] = result.splice(startIndex, 1);
-        result.splice(endIndex, 0, removed);
+    const handleOnDragEnd = (result:any) => {
+        const {destination, source, draggableId} =result;
+        if (!result.destination) {
+            return;
+        }
       
-        return result;
-      };
+       if(
+        destination.droppableId === source.droppableId &&
+        destination.index === source.index
+       ){
+        return;
+       }
 
-    const handleOnDragEnd = (result) => {
-        // if (!result.destination) {
-        //     return;
-        //   }
-      
-        //   const items = reorder(
-        //     this.state.items,
-        //     result.source.index,
-        //     result.destination.index
-        //   );
-      
-        //   this.setState({
-        //     items
-        //   });
+       const start = columns.find(column => column.id === parseInt(source.droppableId));
+       const finish = columns.find(column => column.id === parseInt(destination.draggableId));
+
+       if(start === undefined || finish === undefined) {
+        return;
+        }
+
+       if(start === finish) {
+        const newTaskIds = Array.from(start.taskIds);
+        newTaskIds.splice(source.index, 1);
+        newTaskIds.splice(destination.index, 0, draggableId);
+       
+
+       const newColumn = {
+        ...start,
+        taskIds: newTaskIds,
+        };
+
+        const newColumns = columns.map(column => {
+            if(column.id === newColumn.id) {
+                return newColumn;
+            } else {
+                return column;
+            }
+        });
+
+        setColumns(newColumns);
+        return;
+        }
+
+    //   Moving from one list to another
+        const startTaskIds = Array.from(start.taskIds);
+        startTaskIds.splice(source.index, 1);
+        const newStart = {
+        ...start,
+        taskIds: startTaskIds,
+        };
+
+        const finishTaskIds = Array.from(finish.taskIds);
+        finishTaskIds.splice(destination.index, 0, draggableId);
+        const newFinish = {
+        ...finish,
+        taskIds: finishTaskIds,
+        };
+
+        const newColumns = columns.map(column => {
+        if(column.id === newStart.id) {
+            return newStart;
+        } else if(column.id === newFinish.id){
+            return newFinish;
+        } else {
+            return column;
+        }
+        });
+        setColumns(newColumns);
+
     };
 
 
@@ -92,7 +137,7 @@ function KanbanBoard() {
     </DragDropContext>
     
   );
-}
+};
 
 
 export default KanbanBoard;

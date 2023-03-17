@@ -8,7 +8,8 @@ function AddTask() {
   const [addTask, setAddTask] = useState<{ name: string }>({ name: "" });
   const [tasks, setTasks] = useState<{ id: string; name: String }[]>([]);
 
-  const handleInputShow = () => {
+  const handleInputShow = (e) => {
+    e.preventDefault();
     setShowInput(true);
   };
 
@@ -30,6 +31,16 @@ function AddTask() {
       setAddTask({ name: "" });
     }
   };
+
+  // const handleDragEnd = (result) => {
+  //   if (!result.destination) return;
+
+  //   const items = Array.from(tasks);
+  //   const [reorderedItem] = items.splice(result.source.index, 1);
+  //   items.splice(result.destination.index, 0, reorderedItem);
+
+  //   setTasks(items);
+  // };
 
   const renderedTasks = tasks.map((task, index) => {
     return (
@@ -60,7 +71,7 @@ function AddTask() {
           </button>
         )}
         {showInput && (
-          <div>
+          <form onSubmit={handleInputShow}>
             <input
               className="h-20 mt-10"
               type="text"
@@ -74,7 +85,7 @@ function AddTask() {
               </button>
               <button onClick={handleBackToInput}>Cancel</button>
             </div>
-          </div>
+          </form>
         )}
       </div>
       <Droppable droppableId="test">
