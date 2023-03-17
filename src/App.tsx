@@ -1,14 +1,14 @@
 import KanbanBoard from "./components/KanbanBoard";
 
 
-function App() {
 
-  const column = {name: 'props'}
+function App() {
+  
 
   return (
-    <div className="container my-24 px-6 mx-auto">
-    <KanbanBoard column={column} />
-    </div>
+            <div  className="container my-24 px-6 mx-auto">
+            <KanbanBoard />
+          </div>
   );
 }
 
