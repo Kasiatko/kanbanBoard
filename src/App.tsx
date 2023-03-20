@@ -6,7 +6,7 @@ function App() {
   
 
   return (
-            <div  className="container my-24 px-6 mx-auto">
+            <div  className="container my-24  mx-auto">
             <KanbanBoard />
           </div>
   );

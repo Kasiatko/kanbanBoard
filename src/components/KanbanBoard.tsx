@@ -1,143 +1,159 @@
 import AddTask from "./AddTask";
-import {DragDropContext} from 'react-beautiful-dnd'
+import { DragDropContext } from "react-beautiful-dnd";
 import { useState } from "react";
-
-
+import { Droppable } from "react-beautiful-dnd";
+import TaskList from "./TaskList";
 
 type column = {
   id: number;
   title: string;
-  taskIds: string[];
 };
+
+type tasks ={
+ id: string;
+ name: string;
+}
 
 const InitialColumns: column[] = [
   {
-    id: 1,
+    id: 0,
     title: "Todo",
-    taskIds: [],
+  },
+  {
+    id: 1,
+    title: "In Progress",
   },
   {
     id: 2,
-    title: "In Progress",
-    taskIds: [],
+    title: "In Review",
   },
   {
     id: 3,
-    title: "In Review",
-    taskIds: [],
-  },
-  {
-    id: 4,
     title: "Done",
-    taskIds: [],
   },
- ];
+];
 
-type Task = {
-    id:string;
-    name:string
-};
+const ExampleTasks = [[
+{ id: "task-1", name: "Add Login feature" },
+{ id: "task-2", name: "Add Register feature"}
+],[]]
 
 function KanbanBoard() {
 
-    const [columns, setColumns] = useState(InitialColumns);
+  const [columns, setColumns] = useState<column[]>(InitialColumns);
+  const [taskStore, setTaskStore] = useState<tasks[][]>(ExampleTasks);
 
-    const handleOnDragEnd = (result:any) => {
-        const {destination, source, draggableId} =result;
-        if (!result.destination) {
-            return;
-        }
-      
-       if(
-        destination.droppableId === source.droppableId &&
-        destination.index === source.index
-       ){
-        return;
-       }
+  const handleOnDragEnd = (result: any) => {
+    // const { destination, source, draggableId } = result;
+    // if (!result.destination) {
+    //   return;
+    // }
 
-       const start = columns.find(column => column.id === parseInt(source.droppableId));
-       const finish = columns.find(column => column.id === parseInt(destination.draggableId));
+    // if (
+    //   destination.droppableId === source.droppableId &&
+    //   destination.index === source.index
+    // ) {
+    //   return;
+    // }
 
-       if(start === undefined || finish === undefined) {
-        return;
-        }
+    // const start = columns.find(
+    //   (column) => column.id === parseInt(source.droppableId)
+    // );
+    // const finish = columns.find(
+    //   (column) => column.id === parseInt(destination.draggableId)
+    // );
 
-       if(start === finish) {
-        const newTaskIds = Array.from(start.taskIds);
-        newTaskIds.splice(source.index, 1);
-        newTaskIds.splice(destination.index, 0, draggableId);
-       
+    // if (start === undefined || finish === undefined) {
+    //   return;
+    // }
 
-       const newColumn = {
-        ...start,
-        taskIds: newTaskIds,
-        };
+    // if (start === finish) {
+    //   // const newTaskIds = Array.from(start.taskIds);
+    //   newTaskIds.splice(source.index, 1);
+    //   newTaskIds.splice(destination.index, 0, draggableId);
 
-        const newColumns = columns.map(column => {
-            if(column.id === newColumn.id) {
-                return newColumn;
-            } else {
-                return column;
-            }
-        });
+    //   const newColumn = {
+    //     ...start,
+    //     taskIds: newTaskIds,
+    //   };
 
-        setColumns(newColumns);
-        return;
-        }
+    //   const newColumns = columns.map((column) => {
+    //     if (column.id === newColumn.id) {
+    //       return newColumn;
+    //     } else {
+    //       return column;
+    //     }
+    //   });
+
+    //   setColumns(newColumns);
+      // return;
+    }
 
     //   Moving from one list to another
-        const startTaskIds = Array.from(start.taskIds);
-        startTaskIds.splice(source.index, 1);
-        const newStart = {
-        ...start,
-        taskIds: startTaskIds,
-        };
+  //   const startTaskIds = Array.from(start.taskIds);
+  //   startTaskIds.splice(source.index, 1);
+  //   const newStart = {
+  //     ...start,
+  //     taskIds: startTaskIds,
+  //   };
 
-        const finishTaskIds = Array.from(finish.taskIds);
-        finishTaskIds.splice(destination.index, 0, draggableId);
-        const newFinish = {
-        ...finish,
-        taskIds: finishTaskIds,
-        };
+  //   const finishTaskIds = Array.from(finish.taskIds);
+  //   finishTaskIds.splice(destination.index, 0, draggableId);
+  //   const newFinish = {
+  //     ...finish,
+  //     taskIds: finishTaskIds,
+  //   };
 
-        const newColumns = columns.map(column => {
-        if(column.id === newStart.id) {
-            return newStart;
-        } else if(column.id === newFinish.id){
-            return newFinish;
-        } else {
-            return column;
-        }
-        });
-        setColumns(newColumns);
+  //   const newColumns = columns.map((column) => {
+  //     if (column.id === newStart.id) {
+  //       return newStart;
+  //     } else if (column.id === newFinish.id) {
+  //       return newFinish;
+  //     } else {
+  //       return column;
+  //     }
+  //   });
+  //   setColumns(newColumns);
+  // };
 
-    };
-
-
-    const renderedColumns = columns.map((column) => {
-        return (
-            <div key={column.id}>
-                <div className="block w-80 rounded-lg bg-slate-50 text-center shadow-lg dark:bg-neutral-700">
-                    {column.title}
-                    <div className="bg-slate-50">
-                    <AddTask />
-                    </div>  
-             
+  const renderedColumns = columns.map((column, index) => {
+    // console.log(column.id)
+    return (
+      <div key={index}>
+        <div className="block w-80 rounded-lg bg-red-100 text-center shadow-lg dark:bg-neutral-700">
+          <div className="pt-6">{column.title}</div>
+          <div className="bg-slate-50">
+          <div>  <AddTask
+                    columnId={index}
+                    setTaskStore={setTaskStore}
+                    taskStore={taskStore}
+                  /></div>
+            <Droppable droppableId="test">
+              {(provided, snapshot) => (
+                <div
+                  ref={provided.innerRef}
+                  //   className="pb-10"
+                  {...provided.droppableProps}
+                >
+                 <TaskList taskStore={taskStore} columnId={index}/>
+                  {provided.placeholder}
                 </div>
-            </div>
-        );
-    });
+              )}
+            </Droppable>
+         
+          </div>
+        </div>
+      </div>
+    );
+  });
 
-    
+  
+
   return (
     <DragDropContext onDragEnd={handleOnDragEnd}>
-        <div className="flex justify-center gap-6 mb-6">
-        {renderedColumns}
-    </div>
+      <div className="flex justify-center gap-6 mb-6">{renderedColumns}</div>
     </DragDropContext>
-    
   );
-};
-
+}
 
 export default KanbanBoard;
