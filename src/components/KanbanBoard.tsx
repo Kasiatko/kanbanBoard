@@ -135,7 +135,7 @@ function KanbanBoard() {
                   //   className="pb-10"
                   {...provided.droppableProps}
                 >
-                 <TaskList taskStore={taskStore} columnId={index}/>
+                 <TaskList taskStore={taskStore} columnId={index} />
                   {provided.placeholder}
                 </div>
               )}
