@@ -4,8 +4,6 @@ import { useState } from "react";
 import { Droppable } from "react-beautiful-dnd";
 import TaskList from "./TaskList";
 
-
-
 type column = {
   id: number;
   title: string;
@@ -13,37 +11,37 @@ type column = {
 };
 
 type tasks = {
- columnId: string;
+ columnId: number;
  id: string;
  name: string;
 }
 
 const InitialColumns: column[] = [
   {
-    id: 0,
+    id: 1,
     title: "Todo",
     taskIds : [],
   },
   {
-    id: 1,
+    id: 2,
     title: "In Progress",
     taskIds: [],
   },
   {
-    id: 2,
+    id: 3,
     title: "In Review",
     taskIds: [],
   },
   {
-    id: 3,
+    id: 4,
     title: "Done",
     taskIds: [],
   },
 ];
 
 const ExampleTasks: tasks[][] = [[
-{ id: "task-1", name: "Add Login feature" , columnId: 'column-1'},
-{ id: "task-2", name: "Add Register feature", columnId: 'column-2'},
+{ id: "task-1", name: "Add Login feature" , columnId: 1},
+{ id: "task-2", name: "Add Register feature", columnId: 2},
 ]];
 
 function KanbanBoard() {
@@ -52,6 +50,9 @@ function KanbanBoard() {
   const [taskStore, setTaskStore] = useState<tasks[][]>(ExampleTasks);
 
   const handleOnDragEnd = (result: any) => {
+    // console.log(result)
+    console.log(columns)
+    console.log(columns[0])
     const { destination, source, draggableId } = result;
     if (!destination) {
       return;
@@ -61,60 +62,75 @@ function KanbanBoard() {
       destination.droppableId === source.droppableId &&
       destination.index === source.index
     ) {
-      return;
+     return;
     }
   
-    const start = columns[source.droppableId];
-    const finish = columns[destination.droppableId];
-  
-    if (start === finish) {
+    const start = columns.find(column => column.id === Number(source.droppableId));
+    const finish = columns.find(column => column.id === Number(destination.droppableId));
+    
+    console.log('start:', start);
+    console.log('finish:', finish);
+
+    if (start && finish && start === finish) {
       const newTaskIds = Array.from(start.taskIds);
-      newTaskIds.splice(source.index, 1);
-      newTaskIds.splice(destination.index, 0, draggableId);
+      newTaskIds.splice(source.index[1]);
+      newTaskIds.splice(destination.index[0], draggableId);
   
       const newColumn = {
         ...start,
         taskIds: newTaskIds,
       };
   
-      const newColumns = {
-        ...columns,
-        [newColumn.id]: newColumn,
-      };
+      const newColumns = [...columns];
+      newColumns[newColumn.id - 1] = newColumn;
+    
   
-      setColumns(newColumns);
-    } else {
-      const startTaskIds = Array.from(start.taskIds);
-      startTaskIds.splice(source.index, 1);
-      const newStart = {
-        ...start,
-        taskIds: startTaskIds,
-      };
-  
-      const finishTaskIds = Array.from(finish.taskIds);
-      finishTaskIds.splice(destination.index, 0, draggableId);
-      const newFinish = {
-        ...finish,
-        taskIds: finishTaskIds,
-      };
-  
-      const newTaskStore = { ...taskStore };
-      const draggedTask = newTaskStore[draggableId];
-      draggedTask.columnId = finish.id;
-  
-      const newColumns = {
-        ...columns,
-        [newStart.id]: newStart,
-        [newFinish.id]: newFinish,
-      };
-  
-      setColumns(newColumns);
-      setTaskStore(newTaskStore);
-    }
+    const newTaskStore = { ...taskStore };
+    newTaskIds.forEach((taskId) => {
+    newTaskStore[taskId][0].columnId = newColumn.id;
+  });
+
+  setColumns(newColumns);
+  setTaskStore(newTaskStore);
+} else if (start && finish){
+  const startTaskIds = Array.from(start.taskIds);
+  startTaskIds.splice(source.index[1]);
+  const newStart = {
+    ...start,
+    taskIds: startTaskIds,
+  };
+
+  const finishTaskIds = Array.from(finish.taskIds);
+  finishTaskIds.splice(destination.index[0], draggableId);
+  const newFinish = {
+    ...finish,
+    taskIds: finishTaskIds,
+  };
+
+  const newTaskStore = { ...taskStore };
+  const draggedTask = newTaskStore[draggableId][0];
+  draggedTask.columnId = finish.id;
+
+  startTaskIds.forEach((taskId) => {
+    newTaskStore[taskId].columnId = newStart.id;
+  });
+  finishTaskIds.forEach((taskId) => {
+    newTaskStore[taskId].columnId = newFinish.id;
+  });
+
+  const newColumns = {
+    ...columns,
+    [newStart.id]: newStart,
+    [newFinish.id]: newFinish,
+  };
+
+  setColumns(newColumns);
+  setTaskStore(newTaskStore);
+  } 
   };
 
   const renderedColumns = columns.map((column, index) => {
-    // console.log(column.id)
+    console.log(columns)
     return (
       <div key={index}>
         <div className="block w-80 rounded-lg bg-red-100 text-center shadow-lg dark:bg-neutral-700">

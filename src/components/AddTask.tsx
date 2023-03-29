@@ -39,7 +39,7 @@ function AddTask({columnId, setTaskStore, taskStore}) {
         if (tempArray[columnId] === undefined) {
           tempArray[columnId] = []
         }
-        tempArray[columnId].push(newObject)
+        tempArray[columnId] = [...tempArray[columnId],newObject];
         console.log(taskStore)
       setTaskStore(tempArray)
       setAddTask({ name: "" });

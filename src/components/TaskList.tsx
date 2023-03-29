@@ -2,7 +2,7 @@ import { Draggable } from "react-beautiful-dnd";
 
 export default function TaskList({ taskStore, columnId }) {
 
-  const renderedTasks = taskStore[columnId]?.map((task,index) => {
+  const renderedTasks = taskStore[columnId]?.map((task, index) => {
     return (
       <Draggable key={task.id} draggableId={task.id} index={index}>
         {(provided) => (
@@ -12,7 +12,7 @@ export default function TaskList({ taskStore, columnId }) {
             {...provided.dragHandleProps}
             ref={provided.innerRef}
           >
-            {task.name}
+            {task.name} {task.columnId}
           </div>
         )}
       </Draggable>
