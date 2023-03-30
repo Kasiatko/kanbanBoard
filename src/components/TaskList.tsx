@@ -12,7 +12,7 @@ export default function TaskList({ taskStore, columnId }) {
             {...provided.dragHandleProps}
             ref={provided.innerRef}
           >
-            {task.name} {task.columnId}
+            {task.name}
           </div>
         )}
       </Draggable>
