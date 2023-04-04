@@ -17,7 +17,7 @@ type tasks = {
 const InitialColumns: column[] = [
   {
     id: 1,
-    title: "Todo",
+    title: "To Do",
   },
   {
     id: 2,
@@ -25,7 +25,7 @@ const InitialColumns: column[] = [
   },
   {
     id: 3,
-    title: "In Review",
+    title: "Code Review",
   },
   {
     id: 4,
@@ -108,27 +108,26 @@ function KanbanBoard() {
   const renderedColumns = columns.map((column, index) => {
     return (
       <div key={index}>
-        <div className="block w-80 rounded-lg bg-blue-100 text-center shadow-lg dark:bg-neutral-700 pb-4">
+        <div className="block w-80 rounded-lg bg-gray-100 shadow-lg dark:bg-neutral-700 pb-4 pl-4">
           <div className="pt-6 font-bold text-xl mb-4">{column.title}</div>
-          <div className="bg-slate-50">
-          <div>  
-            <AddTask
-                    columnId={index}
-                    setTaskStore={setTaskStore}
-                    taskStore={taskStore}
-                  /></div>
+          <div>
             <Droppable droppableId={`${index}`}>
               {(provided) => (
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                 >
-                 <TaskList taskStore={taskStore} columnId={index} />
+                 <TaskList taskStore={taskStore} columnId={index} setTaskStore={setTaskStore} />
                   {provided.placeholder}
                 </div>
               )}
             </Droppable>
-         
+            <div >  
+            <AddTask
+                    columnId={index}
+                    setTaskStore={setTaskStore}
+                    taskStore={taskStore}
+                  /></div>
           </div>
         </div>
       </div>
