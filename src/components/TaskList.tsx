@@ -1,8 +1,8 @@
 import { Draggable } from "react-beautiful-dnd";
 import TaskCard from "./TaskCard";
 
+
 export default function TaskList({ taskStore, columnId, setTaskStore}) {
-   
 
   const renderedTasks = taskStore[columnId]?.map((task, index) => {
     return (

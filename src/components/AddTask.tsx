@@ -7,6 +7,7 @@ function AddTask({ columnId, setTaskStore, taskStore }) {
   const [showInput, setShowInput] = useState<JSX.Element | Boolean>(false);
   const [addTask, setAddTask] = useState<{ name: string }>({ name: "" });
   const [errorMessage, setErrorMessage] = useState("");
+  
 
   const handleInputShow = (e) => {
     e.preventDefault();
@@ -15,6 +16,7 @@ function AddTask({ columnId, setTaskStore, taskStore }) {
 
   const handleBackToInput = () => {
     setShowInput(false);
+  
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,6 +35,8 @@ function AddTask({ columnId, setTaskStore, taskStore }) {
         id: uuidv4(),
         name: addTask.name.trim(),
         value: "",
+        date: new Date().toISOString(),
+        color: "#000000"
       };
       let tempArray = [...taskStore];
       if (tempArray[columnId] === undefined) {
@@ -46,6 +50,7 @@ function AddTask({ columnId, setTaskStore, taskStore }) {
       setErrorMessage("Task name cannot be empty");
     }
   };
+
 
   return (
     <div>
@@ -83,5 +88,3 @@ function AddTask({ columnId, setTaskStore, taskStore }) {
 }
 
 export default AddTask;
-
-
