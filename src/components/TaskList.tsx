@@ -9,7 +9,7 @@ export default function TaskList({ taskStore, columnId, setTaskStore}) {
       <Draggable key={task.id} draggableId={task.id} index={index}>
         {(provided) => (
           <div
-            className="flex justify-between gap-1 mt-3 w-72 p-7 bg-white rounded border-2 font-normal text-neutral-600 dark:text-neutral-50 break-all"
+            className="flex justify-between gap-1 mt-3 w-72 p-7 bg-white rounded border-2 font-normal text-neutral-600 break-all"
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             ref={provided.innerRef}

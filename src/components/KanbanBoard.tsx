@@ -109,7 +109,7 @@ function KanbanBoard() {
     const tasks = taskStore[index] || [];
     return (
       <div key={index}>
-        <div className="block w-80 rounded-lg bg-gray-100 shadow-lg dark:bg-neutral-700 pb-4 pl-4">
+        <div className="block w-80 rounded-lg bg-gray-100 shadow-lg pb-4 pl-4">
           <div className="pt-6 font-bold text-xl mb-4">{column.title} ({tasks.length})</div>
           <div>
             <Droppable droppableId={`${index}`}>
